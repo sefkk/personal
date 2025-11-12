@@ -838,6 +838,22 @@ body {
     color: #9ca3af;
 }
 
+.contact-item span {
+    color: #9ca3af;
+}
+
+.contact-item a {
+    color: #9ca3af;
+    text-decoration: none;
+}
+
+/* Prevent mobile browsers from auto-styling phone numbers */
+.contact-item span,
+.contact-item a[href^="tel:"] {
+    color: #9ca3af !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .contact-item i {
     color: #fbbf24;
     font-size: 1.2rem;

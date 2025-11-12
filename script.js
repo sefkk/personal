@@ -495,14 +495,23 @@ function initReactionGame() {
     
     // Start button click handler
     gameStartBtn.addEventListener('click', function() {
+        // Reset start button styles
+        gameStartBtn.style.opacity = '';
+        gameStartBtn.style.transform = '';
+        gameStartBtn.style.transition = '';
+        
         // Hide start button
         gameStartBtn.classList.add('hidden');
         
         // Show and fade in game content
         gameContent.style.display = 'block';
+        gameContent.style.opacity = '0';
+        gameContent.style.transform = 'translateY(20px)';
         // Use setTimeout to ensure display is set before adding visible class
         setTimeout(() => {
             gameContent.classList.add('visible');
+            gameContent.style.opacity = '1';
+            gameContent.style.transform = 'translateY(0)';
         }, 10);
         
         // Initialize game after fade-in
@@ -608,11 +617,23 @@ function initReactionGame() {
         
         // Fade out game content
         gameContent.classList.remove('visible');
+        gameContent.style.opacity = '0';
+        gameContent.style.transform = 'translateY(20px)';
         
-        // After fade out, hide content and show start button
+        // After fade out completes, hide content and fade in start button
         setTimeout(() => {
             gameContent.style.display = 'none';
+            // Show and fade in start button
             gameStartBtn.classList.remove('hidden');
+            gameStartBtn.style.opacity = '0';
+            gameStartBtn.style.transform = 'translateY(10px)';
+            gameStartBtn.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            
+            // Trigger fade in
+            setTimeout(() => {
+                gameStartBtn.style.opacity = '1';
+                gameStartBtn.style.transform = 'translateY(0)';
+            }, 50);
         }, 600);
     }
     
