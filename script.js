@@ -362,7 +362,12 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     const projectCards = document.querySelectorAll('.project-card');
     
+    // Store touch data per card
+    const touchData = new Map();
+    
     projectCards.forEach(card => {
+        touchData.set(card, { startTime: null, moved: false });
+        
         card.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-10px) scale(1.02)';
         });
@@ -370,7 +375,63 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0) scale(1)';
         });
+        
+        // Mobile touch support
+        card.addEventListener('touchstart', function(e) {
+            const data = touchData.get(this);
+            data.startTime = Date.now();
+            data.moved = false;
+        }, { passive: true });
+        
+        card.addEventListener('touchmove', function() {
+            const data = touchData.get(this);
+            data.moved = true;
+        }, { passive: true });
+        
+        card.addEventListener('touchend', function(e) {
+            const data = touchData.get(this);
+            // Only activate if it was a tap (not a swipe) and touch was brief
+            const touchDuration = Date.now() - data.startTime;
+            if (!data.moved && touchDuration < 300 && touchDuration > 0) {
+                // Check if user tapped on a link - if so, let the link handle it
+                const link = e.target.closest('.project-link');
+                if (link) {
+                    // Allow the link to work normally
+                    return;
+                }
+                
+                // Toggle the active state
+                const isActive = this.classList.contains('mobile-active');
+                
+                // Remove active state from all other cards
+                projectCards.forEach(otherCard => {
+                    if (otherCard !== this) {
+                        otherCard.classList.remove('mobile-active');
+                    }
+                });
+                
+                // Toggle this card's active state
+                if (isActive) {
+                    this.classList.remove('mobile-active');
+                } else {
+                    this.classList.add('mobile-active');
+                }
+            }
+            // Reset touch data
+            data.startTime = null;
+            data.moved = false;
+        }, { passive: true });
     });
+    
+    // Single document listener to remove active state when tapping outside
+    document.addEventListener('touchstart', function(e) {
+        const clickedCard = e.target.closest('.project-card');
+        projectCards.forEach(card => {
+            if (card !== clickedCard) {
+                card.classList.remove('mobile-active');
+            }
+        });
+    }, { passive: true });
 });
 
 // Scroll to top functionality

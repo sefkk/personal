@@ -706,7 +706,8 @@ body {
     max-width: 350px;
 }
 
-.project-card:hover {
+.project-card:hover,
+.project-card.mobile-active {
     transform: translateY(-10px);
     box-shadow: 0 20px 40px rgba(251, 191, 36, 0.2);
     border-color: #fbbf24;
@@ -745,7 +746,8 @@ body {
     transition: opacity 0.3s ease;
 }
 
-.project-card:hover .project-overlay {
+.project-card:hover .project-overlay,
+.project-card.mobile-active .project-overlay {
     opacity: 1;
 }
 
