@@ -112,6 +112,7 @@ body {
     color: white;
     position: relative;
     overflow: hidden;
+    padding-top: 70px;
 }
 
 .hero::before {
@@ -367,6 +368,239 @@ body {
     border-radius: 20px;
     color: white;
     font-size: 5rem;
+}
+
+/* Game Section */
+.game {
+    padding: 100px 0;
+    background: #0a0a0a;
+    position: relative;
+    overflow: hidden;
+}
+
+.game::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.game-container {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 10px;
+}
+
+.game-start-btn {
+    display: block;
+    margin: 0 auto;
+    padding: 18px 50px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    background: #fbbf24;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.game-start-btn:hover {
+    background: #f59e0b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4);
+}
+
+.game-start-btn.hidden {
+    display: none;
+}
+
+.game-content {
+    background: #1a1a1a;
+    padding: 3rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    display: none;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.game-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #9ca3af;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.game-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #e5e7eb;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+.game-close-btn:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+.game-content.visible {
+    opacity: 1;
+    transform: translateY(0);
+    display: block;
+}
+
+.game-content h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #fbbf24;
+}
+
+.game-description {
+    color: #9ca3af;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.game-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    width: 100%;
+}
+
+.game-stats .stat-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.8rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    min-width: 0;
+    overflow: hidden;
+}
+
+.game-stats .stat-label {
+    display: block;
+    color: #9ca3af;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+}
+
+.game-stats .stat-value {
+    display: block;
+    color: #fbbf24;
+    font-size: 1.3rem;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+.game-button-wrapper {
+    margin-bottom: 1.5rem;
+}
+
+.game-button {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #2563eb;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.game-button.waiting {
+    background: #ef4444;
+    cursor: not-allowed;
+}
+
+.game-button.waiting:hover {
+    background: #dc2626;
+    transform: none;
+}
+
+.game-button.ready {
+    background: #10b981;
+    cursor: pointer;
+    animation: pulse 1s infinite;
+}
+
+.game-button.ready:hover {
+    background: #059669;
+    transform: scale(1.05);
+}
+
+.game-button.clicked {
+    background: #fbbf24;
+    color: #0a0a0a;
+}
+
+.game-reset {
+    padding: 10px 25px;
+    background: transparent;
+    color: #9ca3af;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.game-reset:hover {
+    background: #fbbf24;
+    color: #0a0a0a;
+    border-color: #fbbf24;
+    transform: translateY(-2px);
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    }
 }
 
 /* Skills Section */
@@ -730,6 +964,50 @@ body {
 }
 
 /* Responsive Design */
+@media (max-width: 900px) {
+    .game-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .game {
+        padding: 80px 0;
+    }
+
+    .game-container {
+        padding: 0 8px;
+    }
+
+    .game-content {
+        padding: 2rem 1.2rem;
+    }
+
+    .game-content h3 {
+        font-size: 1.4rem;
+    }
+
+    .game-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.9rem;
+    }
+
+    .game-stats .stat-value {
+        font-size: 1.15rem;
+    }
+
+    .game-button {
+        padding: 16px 25px;
+        font-size: 1.05rem;
+    }
+
+    .game-start-btn {
+        padding: 15px 40px;
+        font-size: 1.05rem;
+    }
+}
+
 @media (max-width: 768px) {
     .nav-menu {
         position: fixed;
@@ -765,10 +1043,16 @@ body {
         transform: translateY(-8px) rotate(-45deg);
     }
 
+    .hero {
+        padding-top: 70px;
+        min-height: calc(100vh - 70px);
+    }
+
     .hero-container {
         grid-template-columns: 1fr;
         text-align: center;
         gap: 2rem;
+        padding-top: 20px;
     }
 
     .hero-title {
@@ -806,11 +1090,76 @@ body {
         padding: 8px 20px;
         font-size: 0.9rem;
     }
+
+    .game-stats {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .game-content {
+        padding: 2rem 1.5rem;
+    }
+
+    .game-close-btn {
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .game-content h3 {
+        font-size: 1.5rem;
+    }
+
+    .game-description {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .game-button {
+        padding: 16px 30px;
+        font-size: 1rem;
+        max-width: 100%;
+    }
+
+    .game-start-btn {
+        padding: 16px 40px;
+        font-size: 1.1rem;
+        width: 90%;
+        max-width: 300px;
+    }
+
+    .game-reset {
+        padding: 8px 20px;
+        font-size: 0.85rem;
+    }
+
+    .game-stats .stat-value {
+        font-size: 1.1rem;
+    }
+
+    .game-stats .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .game-stats .stat-item {
+        padding: 0.7rem;
+    }
 }
 
 @media (max-width: 480px) {
     .container {
         padding: 0 15px;
+    }
+
+    .hero {
+        padding-top: 70px;
+        min-height: calc(100vh - 70px);
+    }
+
+    .hero-container {
+        padding-top: 15px;
     }
 
     .hero-title {
@@ -819,6 +1168,11 @@ body {
 
     .section-title {
         font-size: 2rem;
+    }
+
+    .game .section-title {
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
     }
 
     .hero-buttons {
@@ -834,6 +1188,131 @@ body {
     .hero-photo {
         width: 250px;
         height: 250px;
+    }
+
+    /* Game Section Mobile Styles */
+    .game {
+        padding: 60px 0;
+    }
+
+    .game-container {
+        padding: 0 5px;
+    }
+
+    .game-content {
+        padding: 1.5rem 1rem;
+        border-radius: 15px;
+    }
+
+    .game-close-btn {
+        top: 8px;
+        right: 8px;
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+    }
+
+    .game-content h3 {
+        font-size: 1.3rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .game-description {
+        font-size: 0.85rem;
+        margin-bottom: 1.2rem;
+        line-height: 1.5;
+    }
+
+    .game-stats {
+        gap: 0.8rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .game-stats .stat-item {
+        padding: 0.6rem 0.5rem;
+        border-radius: 8px;
+    }
+
+    .game-stats .stat-label {
+        font-size: 0.7rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .game-stats .stat-value {
+        font-size: 1rem;
+    }
+
+    .game-button-wrapper {
+        margin-bottom: 1rem;
+    }
+
+    .game-button {
+        padding: 14px 20px;
+        font-size: 0.95rem;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .game-start-btn {
+        padding: 14px 35px;
+        font-size: 1rem;
+        width: 85%;
+        max-width: 280px;
+    }
+
+    .game-reset {
+        padding: 8px 18px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .game {
+        padding: 50px 0;
+    }
+
+    .game-content {
+        padding: 1.2rem 0.8rem;
+    }
+
+    .game-close-btn {
+        top: 6px;
+        right: 6px;
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+
+    .game-content h3 {
+        font-size: 1.2rem;
+    }
+
+    .game-description {
+        font-size: 0.8rem;
+    }
+
+    .game-stats .stat-value {
+        font-size: 0.9rem;
+    }
+
+    .game-stats .stat-label {
+        font-size: 0.65rem;
+    }
+
+    .game-button {
+        padding: 12px 18px;
+        font-size: 0.9rem;
+    }
+
+    .game-start-btn {
+        padding: 12px 30px;
+        font-size: 0.95rem;
+        width: 80%;
+    }
+
+    .game .section-title {
+        font-size: 1.5rem;
     }
 }
 

@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initTypingEffect();
     initParallaxEffect();
     initSmoothScrolling();
+    initReactionGame();
 });
 
 // Navigation functionality
@@ -80,7 +81,7 @@ function initScrollAnimations() {
     }, observerOptions);
 
     // Observe elements for animation
-    const animatedElements = document.querySelectorAll('.section-title, .about-content, .skills-grid, .projects-grid, .contact-content');
+    const animatedElements = document.querySelectorAll('.section-title, .about-content, .game-content, .skills-grid, .projects-grid, .contact-content');
     animatedElements.forEach(el => {
         el.classList.add('loading');
         observer.observe(el);
@@ -383,8 +384,8 @@ function createScrollToTop() {
         right: 30px;
         width: 50px;
         height: 50px;
-        background: #2563eb;
-        color: white;
+        background: #fbbf24;
+        color: #0a0a0a;
         border: none;
         border-radius: 50%;
         cursor: pointer;
@@ -394,7 +395,7 @@ function createScrollToTop() {
         font-size: 1.2rem;
         transition: all 0.3s ease;
         z-index: 1000;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
     `;
 
     document.body.appendChild(scrollToTopBtn);
@@ -418,12 +419,12 @@ function createScrollToTop() {
 
     // Hover effects
     scrollToTopBtn.addEventListener('mouseenter', function() {
-        this.style.background = '#1d4ed8';
+        this.style.background = '#f59e0b';
         this.style.transform = 'scale(1.1)';
     });
 
     scrollToTopBtn.addEventListener('mouseleave', function() {
-        this.style.background = '#2563eb';
+        this.style.background = '#fbbf24';
         this.style.transform = 'scale(1)';
     });
 }
@@ -449,6 +450,175 @@ function initImageLoading() {
 // Initialize image loading
 document.addEventListener('DOMContentLoaded', initImageLoading);
 
+// Reaction Time Game
+function initReactionGame() {
+    const gameStartBtn = document.getElementById('game-start-btn');
+    const gameContent = document.getElementById('game-content');
+    const gameCloseBtn = document.getElementById('game-close-btn');
+    const gameButton = document.getElementById('game-button');
+    const resetButton = document.getElementById('game-reset');
+    const bestTimeEl = document.getElementById('best-time');
+    const currentTimeEl = document.getElementById('current-time');
+    const averageTimeEl = document.getElementById('average-time');
+    const attemptsEl = document.getElementById('attempts');
+    
+    if (!gameStartBtn || !gameContent || !gameButton || !resetButton || !gameCloseBtn) return;
+    
+    let bestTime = localStorage.getItem('reactionBestTime') ? parseFloat(localStorage.getItem('reactionBestTime')) : null;
+    let attempts = parseInt(localStorage.getItem('reactionAttempts')) || 0;
+    let reactionTimes = JSON.parse(localStorage.getItem('reactionTimes')) || [];
+    let startTime = null;
+    let waitingForClick = false;
+    let timeoutId = null;
+    let gameStarted = false;
+    
+    // Calculate average reaction time
+    function calculateAverage() {
+        if (reactionTimes.length === 0) return null;
+        const sum = reactionTimes.reduce((acc, time) => acc + time, 0);
+        return sum / reactionTimes.length;
+    }
+    
+    // Update display
+    function updateDisplay() {
+        if (bestTime !== null) {
+            bestTimeEl.textContent = bestTime.toFixed(2) + 'ms';
+        }
+        const average = calculateAverage();
+        if (average !== null) {
+            averageTimeEl.textContent = average.toFixed(1) + 'ms';
+        } else {
+            averageTimeEl.textContent = '--';
+        }
+        attemptsEl.textContent = attempts;
+    }
+    
+    // Start button click handler
+    gameStartBtn.addEventListener('click', function() {
+        // Hide start button
+        gameStartBtn.classList.add('hidden');
+        
+        // Show and fade in game content
+        gameContent.style.display = 'block';
+        // Use setTimeout to ensure display is set before adding visible class
+        setTimeout(() => {
+            gameContent.classList.add('visible');
+        }, 10);
+        
+        // Initialize game after fade-in
+        setTimeout(() => {
+            gameStarted = true;
+            updateDisplay();
+            startRound();
+        }, 600);
+    });
+    
+    // Start a new round
+    function startRound() {
+        if (!gameStarted) return;
+        
+        gameButton.textContent = 'Wait for green...';
+        gameButton.className = 'game-button waiting';
+        gameButton.disabled = true;
+        waitingForClick = false;
+        currentTimeEl.textContent = '--';
+        
+        // Random delay
+        const delay = Math.random() * 2500 + 500;
+        
+        timeoutId = setTimeout(() => {
+            gameButton.textContent = 'CLICK NOW!';
+            gameButton.className = 'game-button ready';
+            gameButton.disabled = false;
+            startTime = Date.now();
+            waitingForClick = true;
+        }, delay);
+    }
+    
+    // Handle button click
+    gameButton.addEventListener('click', function() {
+        if (!gameStarted) return;
+        
+        if (!waitingForClick) {
+            // Clicked too early
+            gameButton.textContent = 'Too early! Wait for green.';
+            gameButton.className = 'game-button waiting';
+            clearTimeout(timeoutId);
+            setTimeout(startRound, 1500);
+            return;
+        }
+        
+        if (startTime) {
+            const reactionTime = Date.now() - startTime - 100;
+            currentTimeEl.textContent = reactionTime.toFixed(2) + 'ms';
+            
+            // Add reaction time to array
+            reactionTimes.push(reactionTime);
+            localStorage.setItem('reactionTimes', JSON.stringify(reactionTimes));
+            
+            // Update best time
+            if (bestTime === null || reactionTime < bestTime) {
+                bestTime = reactionTime;
+                localStorage.setItem('reactionBestTime', bestTime.toString());
+            }
+            
+            attempts++;
+            localStorage.setItem('reactionAttempts', attempts.toString());
+            updateDisplay();
+            
+            gameButton.textContent = `Great! ${reactionTime.toFixed(2)}ms`;
+            gameButton.className = 'game-button clicked';
+            waitingForClick = false;
+            
+            // Start next round after 2 seconds
+            setTimeout(startRound, 1500);
+        }
+    });
+    
+    // Reset button
+    resetButton.addEventListener('click', function() {
+        if (!gameStarted) return;
+        
+        bestTime = null;
+        attempts = 0;
+        reactionTimes = [];
+        localStorage.removeItem('reactionBestTime');
+        localStorage.removeItem('reactionAttempts');
+        localStorage.removeItem('reactionTimes');
+        clearTimeout(timeoutId);
+        updateDisplay();
+        startRound();
+    });
+    
+    // Close button handler
+    function closeGame() {
+        // Clear any active timeouts
+        clearTimeout(timeoutId);
+        
+        // Reset game state
+        gameStarted = false;
+        waitingForClick = false;
+        startTime = null;
+        
+        // Reset button state
+        gameButton.textContent = 'Wait for green...';
+        gameButton.className = 'game-button waiting';
+        gameButton.disabled = true;
+        currentTimeEl.textContent = '--';
+        
+        // Fade out game content
+        gameContent.classList.remove('visible');
+        
+        // After fade out, hide content and show start button
+        setTimeout(() => {
+            gameContent.style.display = 'none';
+            gameStartBtn.classList.remove('hidden');
+        }, 600);
+    }
+    
+    gameCloseBtn.addEventListener('click', closeGame);
+}
+
 // Performance optimization: Debounce scroll events
 function debounce(func, wait) {
     let timeout;
@@ -473,7 +643,7 @@ window.addEventListener('scroll', debouncedScrollHandler);
 const style = document.createElement('style');
 style.textContent = `
     .scroll-to-top:hover {
-        background: #1d4ed8 !important;
+        background: #f59e0b !important;
         transform: scale(1.1) !important;
     }
     

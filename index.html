@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Name - Portfolio</title>
+    <title>Orkun Sefik - Portfolio</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -14,7 +14,7 @@
  <nav class="navbar">
     <div class="nav-container">
         <div class="nav-logo">
-            <a href="#home">Portfolio</a>
+            <a href="#home">Orkun Sefik</a>
         </div>
         <div class="nav-menu" id="nav-menu">
             <a href="#home" class="nav-link">Home</a>
@@ -63,33 +63,70 @@
         <div class="about-content">
             <div class="about-text">
                 <p>
-                    I'm a passionate developer with over 3 years of experience creating digital solutions 
-                    that combine beautiful design with robust functionality. I specialize in modern web 
-                    technologies and love turning complex problems into simple, elegant designs.
+                    I'm a passionate developer with around 1 year of experience creating digital solutions 
+                    that combine beautiful design with actual functionality. I specialize in AI and love turning complex problems into simple, elegant solutions.
                 </p>
                 <p>
-                    When I'm not coding, you can find me exploring new technologies, contributing to 
-                    open-source projects, or sharing knowledge with the developer community.
+                    Most of the time you'll find small games on random locations in most of my projects, as you're about to find one right now! 
                 </p>
                 <div class="about-stats">
                     <div class="stat">
-                        <h3>50+</h3>
+                        <h3>15+</h3>
                         <p>Projects Completed</p>
                     </div>
                     <div class="stat">
-                        <h3>3+</h3>
+                        <h3>1+</h3>
                         <p>Years Experience</p>
                     </div>
                     <div class="stat">
-                        <h3>25+</h3>
+                        <h3>2+</h3>
                         <p>Happy Clients</p>
                     </div>
                 </div>
             </div>
-            <div class="about-image">
+            <!-- <div class="about-image">
                 <div class="image-placeholder">
-                    <i class="fas fa-code"></i>
+                    <i class="fas fa-code"></i> 
                 </div>
+            </div> -->
+        </div>
+    </div>
+</section>
+
+<!-- Mini Game Section -->
+<section id="game" class="game">
+    <div class="container">
+        <h2 class="section-title">Quick Game Break 🎮</h2>
+        <div class="game-container">
+            <button class="game-start-btn" id="game-start-btn">Start Game</button>
+            <div class="game-content" id="game-content">
+                <button class="game-close-btn" id="game-close-btn" aria-label="Close game">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3>Reaction Time Test</h3>
+                <p class="game-description">Test your reflexes! Click the button as fast as you can when it turns green.</p>
+                <div class="game-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Best Time:</span>
+                        <span class="stat-value" id="best-time">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Current:</span>
+                        <span class="stat-value" id="current-time">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Average:</span>
+                        <span class="stat-value" id="average-time">--</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Attempts:</span>
+                        <span class="stat-value" id="attempts">0</span>
+                    </div>
+                </div>
+                <div class="game-button-wrapper">
+                    <button class="game-button" id="game-button">Wait for green...</button>
+                </div>
+                <button class="game-reset" id="game-reset">Reset</button>
             </div>
         </div>
     </div>
@@ -136,6 +173,9 @@
                     <span class="skill-item">OpenSesame</span>
                     <span class="skill-item">DialogFlow</span>
                     <span class="skill-item">Protégé</span>
+                    <span class="skill-item">Streamlit</span>
+                    <span class="skill-item">Railway</span>
+                    <span class="skill-item">ChromaDB</span>
                 </div>
             </div>
         </div>
