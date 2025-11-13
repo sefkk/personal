@@ -310,14 +310,25 @@ function initParallaxEffect() {
     const hero = document.querySelector('.hero');
     if (!hero) return;
 
-    window.addEventListener('scroll', function() {
+    function handleParallax() {
         const scrolled = window.pageYOffset;
-        const parallax = scrolled * 0.5;
+        // Set scroll threshold - larger on mobile to delay the effect
+        const isMobile = window.innerWidth <= 768;
+        const scrollThreshold = isMobile ? 400 : 200; // Start later on mobile
         
-        if (hero) {
+        // Only apply parallax after scrolling past the threshold
+        if (scrolled > scrollThreshold) {
+            const parallax = (scrolled - scrollThreshold) * 0.5;
             hero.style.transform = `translateY(${parallax}px)`;
+        } else {
+            // Reset transform when above threshold
+            hero.style.transform = 'translateY(0px)';
         }
-    });
+    }
+
+    window.addEventListener('scroll', handleParallax);
+    // Recalculate on resize to handle orientation changes
+    window.addEventListener('resize', handleParallax);
 }
 
 // Smooth scrolling for anchor links
@@ -511,186 +522,350 @@ function initImageLoading() {
 // Initialize image loading
 document.addEventListener('DOMContentLoaded', initImageLoading);
 
-// Reaction Time Game
+// Snake Game
 function initReactionGame() {
     const gameStartBtn = document.getElementById('game-start-btn');
     const gameContent = document.getElementById('game-content');
     const gameCloseBtn = document.getElementById('game-close-btn');
-    const gameButton = document.getElementById('game-button');
-    const resetButton = document.getElementById('game-reset');
-    const bestTimeEl = document.getElementById('best-time');
-    const currentTimeEl = document.getElementById('current-time');
-    const averageTimeEl = document.getElementById('average-time');
-    const attemptsEl = document.getElementById('attempts');
+    const canvas = document.getElementById('snake-canvas');
+    const gameOverlay = document.getElementById('game-overlay');
+    const gameRestartBtn = document.getElementById('game-restart-btn');
+    const currentScoreEl = document.getElementById('current-score');
+    const highScoreEl = document.getElementById('high-score');
+    const snakeLengthEl = document.getElementById('snake-length');
+    const gameSpeedEl = document.getElementById('game-speed');
+    const finalScoreEl = document.getElementById('final-score');
     
-    if (!gameStartBtn || !gameContent || !gameButton || !resetButton || !gameCloseBtn) return;
+    // Control buttons
+    const btnUp = document.getElementById('btn-up');
+    const btnDown = document.getElementById('btn-down');
+    const btnLeft = document.getElementById('btn-left');
+    const btnRight = document.getElementById('btn-right');
     
-    let bestTime = localStorage.getItem('reactionBestTime') ? parseFloat(localStorage.getItem('reactionBestTime')) : null;
-    let attempts = parseInt(localStorage.getItem('reactionAttempts')) || 0;
-    let reactionTimes = JSON.parse(localStorage.getItem('reactionTimes')) || [];
-    let startTime = null;
-    let waitingForClick = false;
-    let timeoutId = null;
+    if (!gameStartBtn || !gameContent || !canvas || !gameCloseBtn) return;
+    
+    const ctx = canvas.getContext('2d');
+    const gridSize = 20;
+    const tileCount = canvas.width / gridSize;
+    
+    let snake = [{ x: 10, y: 10 }];
+    let food = {};
+    let dx = 0;
+    let dy = 0;
+    let score = 0;
+    let highScore = parseInt(localStorage.getItem('snakeHighScore')) || 0;
+    let gameLoop = null;
     let gameStarted = false;
+    let nextDirection = { x: 0, y: 0 };
+    let gameSpeed = 1;
+    let baseSpeed = 150;
     
-    // Calculate average reaction time
-    function calculateAverage() {
-        if (reactionTimes.length === 0) return null;
-        const sum = reactionTimes.reduce((acc, time) => acc + time, 0);
-        return sum / reactionTimes.length;
+    // Initialize high score display
+    highScoreEl.textContent = highScore;
+    
+    // Generate random food position
+    function generateFood() {
+        food = {
+            x: Math.floor(Math.random() * tileCount),
+            y: Math.floor(Math.random() * tileCount)
+        };
+        // Make sure food doesn't spawn on snake
+        for (let segment of snake) {
+            if (segment.x === food.x && segment.y === food.y) {
+                generateFood();
+                return;
+            }
+        }
     }
     
-    // Update display
-    function updateDisplay() {
-        if (bestTime !== null) {
-            bestTimeEl.textContent = bestTime.toFixed(2) + 'ms';
+    // Draw game
+    function drawGame() {
+        clearCanvas();
+        drawSnake();
+        drawFood();
+    }
+    
+    // Clear canvas
+    function clearCanvas() {
+        ctx.fillStyle = '#0a0a0a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+    
+    // Draw snake
+    function drawSnake() {
+        ctx.fillStyle = '#fbbf24';
+        for (let segment of snake) {
+            ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 2, gridSize - 2);
         }
-        const average = calculateAverage();
-        if (average !== null) {
-            averageTimeEl.textContent = average.toFixed(1) + 'ms';
+        // Draw head with different color
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(snake[0].x * gridSize, snake[0].y * gridSize, gridSize - 2, gridSize - 2);
+    }
+    
+    // Draw food
+    function drawFood() {
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath();
+        ctx.arc(
+            food.x * gridSize + gridSize / 2,
+            food.y * gridSize + gridSize / 2,
+            gridSize / 2 - 2,
+            0,
+            2 * Math.PI
+        );
+        ctx.fill();
+    }
+    
+    // Move snake
+    function moveSnake() {
+        // Apply next direction
+        if (nextDirection.x !== 0 || nextDirection.y !== 0) {
+            // Prevent reversing into itself
+            if (dx === -nextDirection.x && dy === -nextDirection.y) {
+                // Ignore reverse direction
+            } else {
+                dx = nextDirection.x;
+                dy = nextDirection.y;
+            }
+        }
+        
+        const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+        
+        // Check wall collision
+        if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+            gameOver();
+            return;
+        }
+        
+        // Check self collision (skip the head itself)
+        for (let i = 1; i < snake.length; i++) {
+            if (head.x === snake[i].x && head.y === snake[i].y) {
+                gameOver();
+                return;
+            }
+        }
+        
+        snake.unshift(head);
+        
+        // Check food collision
+        if (head.x === food.x && head.y === food.y) {
+            score += 10;
+            generateFood();
+            updateStats();
+            
+            // Increase speed every 5 foods
+            if (score % 50 === 0 && score > 0) {
+                gameSpeed++;
+                baseSpeed = Math.max(80, baseSpeed - 10);
+                updateStats();
+                // Restart game loop with new speed
+                clearInterval(gameLoop);
+                gameLoop = setInterval(moveSnake, baseSpeed);
+            }
         } else {
-            averageTimeEl.textContent = '--';
+            snake.pop();
         }
-        attemptsEl.textContent = attempts;
+        
+        drawGame();
     }
+    
+    // Update stats display
+    function updateStats() {
+        currentScoreEl.textContent = score;
+        snakeLengthEl.textContent = snake.length;
+        gameSpeedEl.textContent = gameSpeed;
+        
+        if (score > highScore) {
+            highScore = score;
+            highScoreEl.textContent = highScore;
+            localStorage.setItem('snakeHighScore', highScore.toString());
+        }
+    }
+    
+    // Game over
+    function gameOver() {
+        gameStarted = false;
+        clearInterval(gameLoop);
+        finalScoreEl.textContent = score;
+        gameOverlay.classList.add('active');
+    }
+    
+    // Start game
+    function startGame() {
+        snake = [{ x: 10, y: 10 }];
+        dx = 0;
+        dy = 0;
+        nextDirection = { x: 0, y: 0 };
+        score = 0;
+        gameSpeed = 1;
+        baseSpeed = 150;
+        gameStarted = true;
+        gameOverlay.classList.remove('active');
+        generateFood();
+        updateStats();
+        drawGame();
+        
+        // Start game loop
+        if (gameLoop) clearInterval(gameLoop);
+        gameLoop = setInterval(moveSnake, baseSpeed);
+    }
+    
+    // Handle keyboard input
+    function handleKeyPress(e) {
+        if (!gameStarted) return;
+        
+        const key = e.key;
+        switch(key) {
+            case 'ArrowUp':
+                e.preventDefault();
+                if (dy !== 1) nextDirection = { x: 0, y: -1 };
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                if (dy !== -1) nextDirection = { x: 0, y: 1 };
+                break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                if (dx !== 1) nextDirection = { x: -1, y: 0 };
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                if (dx !== -1) nextDirection = { x: 1, y: 0 };
+                break;
+        }
+    }
+    
+    // Control button handlers
+    if (btnUp) {
+        btnUp.addEventListener('click', () => {
+            if (gameStarted && dy !== 1) nextDirection = { x: 0, y: -1 };
+        });
+    }
+    if (btnDown) {
+        btnDown.addEventListener('click', () => {
+            if (gameStarted && dy !== -1) nextDirection = { x: 0, y: 1 };
+        });
+    }
+    if (btnLeft) {
+        btnLeft.addEventListener('click', () => {
+            if (gameStarted && dx !== 1) nextDirection = { x: -1, y: 0 };
+        });
+    }
+    if (btnRight) {
+        btnRight.addEventListener('click', () => {
+            if (gameStarted && dx !== -1) nextDirection = { x: 1, y: 0 };
+        });
+    }
+    
+    // Touch swipe controls - improved for mobile
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchMoved = false;
+    
+    canvas.addEventListener('touchstart', (e) => {
+        if (!gameStarted) return;
+        e.preventDefault();
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchMoved = false;
+    }, { passive: false });
+    
+    canvas.addEventListener('touchmove', (e) => {
+        if (!gameStarted) return;
+        e.preventDefault();
+        touchMoved = true;
+    }, { passive: false });
+    
+    canvas.addEventListener('touchend', (e) => {
+        if (!gameStarted) return;
+        e.preventDefault();
+        
+        // Only process swipe if there was movement
+        if (!touchMoved) return;
+        
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const diffX = touchEndX - touchStartX;
+        const diffY = touchEndY - touchStartY;
+        
+        // Minimum swipe distance (reduced for better responsiveness)
+        const minSwipeDistance = 20;
+        
+        // Determine if swipe is more horizontal or vertical
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            // Horizontal swipe
+            if (Math.abs(diffX) > minSwipeDistance) {
+                if (diffX > 0 && dx !== -1) {
+                    // Swipe right
+                    nextDirection = { x: 1, y: 0 };
+                } else if (diffX < 0 && dx !== 1) {
+                    // Swipe left
+                    nextDirection = { x: -1, y: 0 };
+                }
+            }
+        } else {
+            // Vertical swipe
+            if (Math.abs(diffY) > minSwipeDistance) {
+                if (diffY > 0 && dy !== -1) {
+                    // Swipe down
+                    nextDirection = { x: 0, y: 1 };
+                } else if (diffY < 0 && dy !== 1) {
+                    // Swipe up
+                    nextDirection = { x: 0, y: -1 };
+                }
+            }
+        }
+        
+        touchMoved = false;
+    }, { passive: false });
+    
+    // Keyboard event listener
+    window.addEventListener('keydown', handleKeyPress);
     
     // Start button click handler
     gameStartBtn.addEventListener('click', function() {
-        // Reset start button styles
         gameStartBtn.style.opacity = '';
         gameStartBtn.style.transform = '';
         gameStartBtn.style.transition = '';
         
-        // Hide start button
         gameStartBtn.classList.add('hidden');
         
-        // Show and fade in game content
         gameContent.style.display = 'block';
         gameContent.style.opacity = '0';
         gameContent.style.transform = 'translateY(20px)';
-        // Use setTimeout to ensure display is set before adding visible class
         setTimeout(() => {
             gameContent.classList.add('visible');
             gameContent.style.opacity = '1';
             gameContent.style.transform = 'translateY(0)';
         }, 10);
         
-        // Initialize game after fade-in
         setTimeout(() => {
-            gameStarted = true;
-            updateDisplay();
-            startRound();
+            startGame();
         }, 600);
     });
     
-    // Start a new round
-    function startRound() {
-        if (!gameStarted) return;
-        
-        gameButton.textContent = 'Wait for green...';
-        gameButton.className = 'game-button waiting';
-        gameButton.disabled = true;
-        waitingForClick = false;
-        currentTimeEl.textContent = '--';
-        
-        // Random delay
-        const delay = Math.random() * 2500 + 500;
-        
-        timeoutId = setTimeout(() => {
-            gameButton.textContent = 'CLICK NOW!';
-            gameButton.className = 'game-button ready';
-            gameButton.disabled = false;
-            startTime = Date.now();
-            waitingForClick = true;
-        }, delay);
+    // Restart button
+    if (gameRestartBtn) {
+        gameRestartBtn.addEventListener('click', startGame);
     }
-    
-    // Handle button click
-    gameButton.addEventListener('click', function() {
-        if (!gameStarted) return;
-        
-        if (!waitingForClick) {
-            // Clicked too early
-            gameButton.textContent = 'Too early! Wait for green.';
-            gameButton.className = 'game-button waiting';
-            clearTimeout(timeoutId);
-            setTimeout(startRound, 1500);
-            return;
-        }
-        
-        if (startTime) {
-            const reactionTime = Date.now() - startTime - 100;
-            currentTimeEl.textContent = reactionTime.toFixed(2) + 'ms';
-            
-            // Add reaction time to array
-            reactionTimes.push(reactionTime);
-            localStorage.setItem('reactionTimes', JSON.stringify(reactionTimes));
-            
-            // Update best time
-            if (bestTime === null || reactionTime < bestTime) {
-                bestTime = reactionTime;
-                localStorage.setItem('reactionBestTime', bestTime.toString());
-            }
-            
-            attempts++;
-            localStorage.setItem('reactionAttempts', attempts.toString());
-            updateDisplay();
-            
-            gameButton.textContent = `Great! ${reactionTime.toFixed(2)}ms`;
-            gameButton.className = 'game-button clicked';
-            waitingForClick = false;
-            
-            // Start next round after 2 seconds
-            setTimeout(startRound, 1500);
-        }
-    });
-    
-    // Reset button
-    resetButton.addEventListener('click', function() {
-        if (!gameStarted) return;
-        
-        bestTime = null;
-        attempts = 0;
-        reactionTimes = [];
-        localStorage.removeItem('reactionBestTime');
-        localStorage.removeItem('reactionAttempts');
-        localStorage.removeItem('reactionTimes');
-        clearTimeout(timeoutId);
-        updateDisplay();
-        startRound();
-    });
     
     // Close button handler
     function closeGame() {
-        // Clear any active timeouts
-        clearTimeout(timeoutId);
-        
-        // Reset game state
+        if (gameLoop) clearInterval(gameLoop);
         gameStarted = false;
-        waitingForClick = false;
-        startTime = null;
+        gameOverlay.classList.remove('active');
         
-        // Reset button state
-        gameButton.textContent = 'Wait for green...';
-        gameButton.className = 'game-button waiting';
-        gameButton.disabled = true;
-        currentTimeEl.textContent = '--';
-        
-        // Fade out game content
         gameContent.classList.remove('visible');
         gameContent.style.opacity = '0';
         gameContent.style.transform = 'translateY(20px)';
         
-        // After fade out completes, hide content and fade in start button
         setTimeout(() => {
             gameContent.style.display = 'none';
-            // Show and fade in start button
             gameStartBtn.classList.remove('hidden');
             gameStartBtn.style.opacity = '0';
             gameStartBtn.style.transform = 'translateY(10px)';
             gameStartBtn.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
             
-            // Trigger fade in
             setTimeout(() => {
                 gameStartBtn.style.opacity = '1';
                 gameStartBtn.style.transform = 'translateY(0)';

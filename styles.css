@@ -594,6 +594,152 @@ body {
     transform: translateY(-2px);
 }
 
+/* Snake Game Styles */
+.snake-game-wrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
+    background: #0a0a0a;
+    border-radius: 15px;
+    padding: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+#snake-canvas {
+    display: block;
+    background: #0a0a0a;
+    border-radius: 10px;
+    max-width: 100%;
+    height: auto;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+}
+
+.game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    z-index: 10;
+}
+
+.game-overlay.active {
+    display: flex;
+}
+
+.game-over-content {
+    text-align: center;
+    padding: 2rem;
+}
+
+.game-over-content h4 {
+    font-size: 2rem;
+    color: #fbbf24;
+    margin-bottom: 1rem;
+}
+
+.game-over-content p {
+    color: #e5e7eb;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.game-over-content #final-score {
+    color: #fbbf24;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.game-controls {
+    margin: 2rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+/* Hide controls on mobile - use touch/swipe instead */
+@media (max-width: 768px) {
+    .game-controls {
+        display: none;
+    }
+    
+    .desktop-instructions {
+        display: none;
+    }
+    
+    .mobile-instructions {
+        display: block;
+    }
+}
+
+@media (min-width: 769px) {
+    .mobile-instructions {
+        display: none;
+    }
+    
+    .desktop-instructions {
+        display: block;
+    }
+}
+
+.control-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.control-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.control-btn {
+    width: 60px;
+    height: 60px;
+    background: #1a1a1a;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    color: #fbbf24;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.control-btn:active {
+    background: #fbbf24;
+    color: #0a0a0a;
+    transform: scale(0.95);
+}
+
+.control-btn:hover {
+    border-color: #fbbf24;
+    background: rgba(251, 191, 36, 0.1);
+}
+
+.game-instructions {
+    margin-top: 1rem;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.game-instructions i {
+    color: #fbbf24;
+    margin-right: 0.5rem;
+}
+
 @keyframes pulse {
     0%, 100% {
         box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
@@ -1023,6 +1169,26 @@ body {
     .game-start-btn {
         padding: 15px 40px;
         font-size: 1.05rem;
+    }
+
+    #snake-canvas {
+        width: 100%;
+        max-width: 350px;
+        height: auto;
+    }
+
+    .control-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+
+    .game-over-content h4 {
+        font-size: 1.5rem;
+    }
+
+    .game-over-content p {
+        font-size: 1rem;
     }
 }
 

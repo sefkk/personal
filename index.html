@@ -46,6 +46,7 @@
             <div class="hero-buttons">
                 <a href="#projects" class="btn btn-primary">View My Work</a>
                 <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                <a href="data/orkunCVb.pdf" target="_blank" class="btn btn-secondary">Download CV</a>
             </div>
         </div>
         <div class="hero-image">
@@ -104,30 +105,50 @@
                 <button class="game-close-btn" id="game-close-btn" aria-label="Close game">
                     <i class="fas fa-times"></i>
                 </button>
-                <h3>Reaction Time Test</h3>
-                <p class="game-description">Test your reflexes! Click the button as fast as you can when it turns green.</p>
+                <h3>Snake Game 🐍</h3>
+                <p class="game-description">Use arrow keys or swipe to control the snake. Eat the food to grow and increase your score!</p>
                 <div class="game-stats">
                     <div class="stat-item">
-                        <span class="stat-label">Best Time:</span>
-                        <span class="stat-value" id="best-time">--</span>
+                        <span class="stat-label">Score:</span>
+                        <span class="stat-value" id="current-score">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Current:</span>
-                        <span class="stat-value" id="current-time">--</span>
+                        <span class="stat-label">High Score:</span>
+                        <span class="stat-value" id="high-score">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Average:</span>
-                        <span class="stat-value" id="average-time">--</span>
+                        <span class="stat-label">Length:</span>
+                        <span class="stat-value" id="snake-length">1</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-label">Attempts:</span>
-                        <span class="stat-value" id="attempts">0</span>
+                        <span class="stat-label">Speed:</span>
+                        <span class="stat-value" id="game-speed">1</span>
                     </div>
                 </div>
-                <div class="game-button-wrapper">
-                    <button class="game-button" id="game-button">Wait for green...</button>
+                <div class="snake-game-wrapper">
+                    <canvas id="snake-canvas" width="400" height="400"></canvas>
+                    <div class="game-overlay" id="game-overlay">
+                        <div class="game-over-content">
+                            <h4 id="game-over-title">Game Over!</h4>
+                            <p id="game-over-message">Your score: <span id="final-score">0</span></p>
+                            <button class="game-button" id="game-restart-btn">Play Again</button>
+                        </div>
+                    </div>
                 </div>
-                <button class="game-reset" id="game-reset">Reset</button>
+                <div class="game-controls">
+                    <div class="control-buttons">
+                        <button class="control-btn" id="btn-up" aria-label="Move up"><i class="fas fa-arrow-up"></i></button>
+                        <div class="control-row">
+                            <button class="control-btn" id="btn-left" aria-label="Move left"><i class="fas fa-arrow-left"></i></button>
+                            <button class="control-btn" id="btn-down" aria-label="Move down"><i class="fas fa-arrow-down"></i></button>
+                            <button class="control-btn" id="btn-right" aria-label="Move right"><i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-instructions">
+                    <p class="desktop-instructions"><i class="fas fa-info-circle"></i> Use arrow keys to control the snake</p>
+                    <p class="mobile-instructions"><i class="fas fa-info-circle"></i> Swipe on the game area to control the snake</p>
+                </div>
             </div>
         </div>
     </div>
@@ -313,12 +334,14 @@
                         <i class="fas fa-map-marker-alt"></i>
                         <span>Amsterdam, the Netherlands</span>
                     </div>
+                    <div class="contact-item">
+                        <i class="fas fa-file-pdf"></i>
+                        <a href="data/orkunCVb.pdf" target="_blank" style="color: inherit; text-decoration: none;">Download CV</a>
+                    </div>
                 </div>
                 <div class="social-links">
-                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
+                    <a href=" https://github.com/sefkk" target="_blank" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/orkunsefik/" target="_blank" class="social-link"><i class="fab fa-linkedin"></i></a>                   
                 </div>
             </div>
             <form class="contact-form" id="contact-form" action="https://api.web3forms.com/submit" method="POST">
