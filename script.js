@@ -81,7 +81,7 @@ function initScrollAnimations() {
     }, observerOptions);
 
     // Observe elements for animation
-    const animatedElements = document.querySelectorAll('.section-title, .about-content, .game-content, .skills-grid, .projects-grid, .contact-content');
+    const animatedElements = document.querySelectorAll('.section-title, .about-content, .game-content, .skills-grid, .projects-grid, .clients-grid, .contact-content');
     animatedElements.forEach(el => {
         el.classList.add('loading');
         observer.observe(el);
