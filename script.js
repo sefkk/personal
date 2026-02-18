@@ -1,6 +1,20 @@
+// Load navbar and footer from partials
+async function loadPartials() {
+    const [navHtml, footerHtml] = await Promise.all([
+        fetch('partials/navbar.html').then(r => r.text()),
+        fetch('partials/footer.html').then(r => r.text())
+    ]);
+    const navPlaceholder = document.getElementById('navbar-placeholder');
+    const footerPlaceholder = document.getElementById('footer-placeholder');
+    if (navPlaceholder) navPlaceholder.outerHTML = navHtml;
+    if (footerPlaceholder) footerPlaceholder.outerHTML = footerHtml;
+    const yearEl = document.getElementById('current-year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+}
+
 // DOM Content Loaded
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize all functionality
+document.addEventListener('DOMContentLoaded', async function() {
+    await loadPartials();
     initNavigation();
     initScrollAnimations();
     initProjectFilters();
@@ -65,29 +79,27 @@ function initNavigation() {
     });
 }
 
-// Scroll animations
+// Scroll animations – Apple-style reveal on scroll (fade-in + stagger)
 function initScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+    const revealOptions = {
+        threshold: 0.12,
+        rootMargin: '0px 0px -60px 0px'
     };
 
-    const observer = new IntersectionObserver(function(entries) {
+    const revealObserver = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('loaded');
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
             }
         });
-    }, observerOptions);
+    }, revealOptions);
 
-    // Observe elements for animation
-    const animatedElements = document.querySelectorAll('.section-title, .about-content, .game-content, .skills-grid, .projects-grid, .clients-grid, .contact-content');
-    animatedElements.forEach(el => {
-        el.classList.add('loading');
-        observer.observe(el);
+    document.querySelectorAll('.reveal-section').forEach(section => {
+        revealObserver.observe(section);
     });
 
-    // Counter animation for stats
+    // Counter animation for stats (when About section is revealed)
     const stats = document.querySelectorAll('.stat h3');
     const statsObserver = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
@@ -96,7 +108,7 @@ function initScrollAnimations() {
                 statsObserver.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.4 });
 
     stats.forEach(stat => {
         statsObserver.observe(stat);
@@ -454,20 +466,19 @@ function createScrollToTop() {
         position: fixed;
         bottom: 30px;
         right: 30px;
-        width: 50px;
-        height: 50px;
-        background: #fbbf24;
-        color: #0a0a0a;
-        border: none;
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.06);
+        color: #b0b0b8;
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         cursor: pointer;
         display: none;
         align-items: center;
         justify-content: center;
-        font-size: 1.2rem;
-        transition: all 0.3s ease;
+        font-size: 1.1rem;
+        transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
         z-index: 1000;
-        box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
     `;
 
     document.body.appendChild(scrollToTopBtn);
@@ -489,15 +500,17 @@ function createScrollToTop() {
         });
     });
 
-    // Hover effects
+    // Hover effects – theme matte silver
     scrollToTopBtn.addEventListener('mouseenter', function() {
-        this.style.background = '#f59e0b';
-        this.style.transform = 'scale(1.1)';
+        this.style.background = 'rgba(255, 255, 255, 0.12)';
+        this.style.color = '#e4e4ea';
+        this.style.borderColor = 'rgba(255, 255, 255, 0.18)';
     });
 
     scrollToTopBtn.addEventListener('mouseleave', function() {
-        this.style.background = '#fbbf24';
-        this.style.transform = 'scale(1)';
+        this.style.background = 'rgba(255, 255, 255, 0.06)';
+        this.style.color = '#b0b0b8';
+        this.style.borderColor = 'rgba(255, 255, 255, 0.1)';
     });
 }
 
@@ -896,12 +909,13 @@ const debouncedScrollHandler = debounce(function() {
 
 window.addEventListener('scroll', debouncedScrollHandler);
 
-// Add CSS for scroll to top button
+// Add CSS for scroll to top button (theme: matte silver)
 const style = document.createElement('style');
 style.textContent = `
     .scroll-to-top:hover {
-        background: #f59e0b !important;
-        transform: scale(1.1) !important;
+        background: rgba(255, 255, 255, 0.12) !important;
+        color: #e4e4ea !important;
+        border-color: rgba(255, 255, 255, 0.18) !important;
     }
     
     .notification-content {
