@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     await loadPartials();
     initNavigation();
     initScrollAnimations();
+    initTimelineScroll();
     initProjectFilters();
     initContactForm();
     initTypingEffect();
@@ -113,6 +114,59 @@ function initScrollAnimations() {
     stats.forEach(stat => {
         statsObserver.observe(stat);
     });
+}
+
+// Timeline: scroll-driven enter (outside → line) / exit (line → outside)
+function initTimelineScroll() {
+    const timeline = document.querySelector('.timeline');
+    if (!timeline) return;
+
+    const items = timeline.querySelectorAll('.timeline-item');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        items.forEach(function(el) {
+            el.style.transform = 'translateX(0)';
+            el.style.opacity = '1';
+        });
+        return;
+    }
+    const OFFSET_OUT = 120;   // px from center when "outside"
+    const VIEWPORT_ENTER = 0.99;  // start moving when item top is at 85% of viewport height
+    const VIEWPORT_CENTER = 0.5; // fully "in" when item top is at 35% of viewport height
+
+    function getProgress(rect) {
+        const h = window.innerHeight;
+        const start = h * VIEWPORT_ENTER;
+        const end = h * VIEWPORT_CENTER;
+        if (rect.top >= start) return 0;
+        if (rect.top <= end) return 1;
+        return 1 - (rect.top - end) / (start - end);
+    }
+
+    function update() {
+        items.forEach(function(el) {
+            const rect = el.getBoundingClientRect();
+            const progress = Math.max(0, Math.min(1, getProgress(rect)));
+            const isLeft = el.classList.contains('timeline-item--left');
+            const tx = (1 - progress) * (isLeft ? -OFFSET_OUT : OFFSET_OUT);
+            el.style.transform = 'translateX(' + tx + 'px)';
+            el.style.opacity = String(progress);
+        });
+    }
+
+    let ticking = false;
+    function onScroll() {
+        if (!ticking) {
+            requestAnimationFrame(function() {
+                update();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+
+    update(); // initial
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', update);
 }
 
 // Counter animation

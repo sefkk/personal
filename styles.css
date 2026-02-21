@@ -395,6 +395,160 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+/* Experience Timeline */
+.experience {
+    padding: 100px 0;
+    background: #0f0f0f;
+    position: relative;
+}
+
+.timeline {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.12), transparent);
+    transform: translateX(-50%);
+    border-radius: 1px;
+}
+
+.timeline-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 3rem;
+    /* Scroll-driven: opacity and translateX set by JS from outside → line */
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-item--left .timeline-content {
+    grid-column: 1;
+    text-align: right;
+    padding-right: 3rem;
+}
+
+.timeline-item--right .timeline-content {
+    grid-column: 2;
+    text-align: left;
+    padding-left: 3rem;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: 50%;
+    top: 0.5rem;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+    z-index: 2;
+}
+
+.timeline-item:hover .timeline-dot,
+.timeline-item:focus-within .timeline-dot {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.2);
+}
+
+.timeline-content {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    transition: background 0.25s ease, border-color 0.25s ease;
+    cursor: default;
+}
+
+.timeline-item:hover .timeline-content,
+.timeline-item:focus-within .timeline-content {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.timeline-date {
+    display: inline-block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #7e7e86;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.02em;
+}
+
+.timeline-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #e4e4ea;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+}
+
+.timeline-role {
+    font-size: 0.9rem;
+    color: #b0b0b8;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-desc {
+    font-size: 0.95rem;
+    color: #7e7e86;
+    line-height: 1.6;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .timeline-line {
+        left: 20px;
+        transform: none;
+    }
+
+    .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin-bottom: 2rem;
+        padding-left: 40px;
+    }
+
+    .timeline-item--left .timeline-content,
+    .timeline-item--right .timeline-content {
+        grid-column: 1;
+        text-align: left;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .timeline-dot {
+        left: 20px;
+        margin-left: -7px;
+        top: 0.5rem;
+    }
+
+    .timeline-content {
+        padding: 1rem 1.25rem;
+    }
+
+    .timeline-title {
+        font-size: 1.05rem;
+    }
+}
+
 /* Game Section */
 .game {
     padding: 100px 0;
@@ -1340,6 +1494,8 @@ body {
 .reveal-section.contact.revealed .contact-info { opacity: 1; transform: translateY(0); transition-delay: 120ms; }
 .reveal-section.contact.revealed .contact-form { opacity: 1; transform: translateY(0); transition-delay: 240ms; }
 
+/* Experience timeline: scroll-driven animation in JS (outside → line) */
+
 @media (prefers-reduced-motion: reduce) {
     .reveal-section .section-title,
     .reveal-section .section-subtitle,
@@ -1352,7 +1508,8 @@ body {
     .reveal-section .project-filters,
     .reveal-section .project-card,
     .reveal-section .contact-info,
-    .reveal-section .contact-form {
+    .reveal-section .contact-form,
+    .reveal-section .timeline-item {
         transform: none;
         transition-duration: 0.2s;
     }
@@ -1367,7 +1524,8 @@ body {
     .reveal-section.revealed .project-filters,
     .reveal-section.revealed .project-card,
     .reveal-section.revealed .contact-info,
-    .reveal-section.revealed .contact-form {
+    .reveal-section.revealed .contact-form,
+    .reveal-section.revealed .timeline-item {
         opacity: 1;
         transform: none;
         transition-delay: 0ms;
