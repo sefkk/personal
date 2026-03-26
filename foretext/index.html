@@ -20,6 +20,8 @@
         .foretext-page .section h3 { font-size: 1.1rem; font-weight: 600; color: #e4e4ea; margin: 1.5rem 0 0.5rem; }
         .foretext-page .section p { color: #7e7e86; line-height: 1.7; margin: 0 0 1rem; font-size: 1rem; }
         .foretext-page .section p:last-child { margin-bottom: 0; }
+        .foretext-page .section ul { color: #7e7e86; line-height: 1.7; margin: 0 0 1rem; padding-left: 1.25rem; font-size: 1rem; }
+        .foretext-page .section li { margin-bottom: 0.5rem; }
         .foretext-page .section a { color: #b0b0b8; text-decoration: underline; text-underline-offset: 2px; }
         .foretext-page .section a:hover { color: #e4e4ea; }
     </style>
@@ -44,10 +46,24 @@
                 <h2>Privacy Policy</h2>
                 <p><strong>What we collect.</strong> The app does not collect personal data beyond your <strong>username</strong> and <strong>user ID</strong>.</p>
                 <p><strong>Chats.</strong> Your chats are <strong>not</strong> stored in any database or sent to our servers. They stay <strong>only on your device</strong>.</p>
-                <p><strong>Analysis.</strong> Analysis of your text is performed <strong>on your device</strong>.</p>
-                <p><strong>When you send a query.</strong> Only when you send a query, a <strong>portion</strong> of your chats and the analyses that were made on your device may be sent to Google to process that request. Google’s handling of that data is covered by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google’s Privacy Policy</a>.</p>
-                <p>We do not sell your personal data.</p>
-                <p style="font-size: 0.9rem; color: #6e6e73; margin-top: 1rem;">Last updated: February 18, 2026</p>
+                <p><strong>Analysis.</strong> Analysis of your text is performed <strong>on your device</strong>. This includes texting patterns, vocabulary, message length, and communication style.</p>
+                <p>Only when you send a query, a small portion of your chats and the analyses that were made on your device are sent to <strong>Google's Gemini AI service</strong> to process that request. Specifically, this includes:</p>
+                <ul>
+                    <li>The contact's behavioral profile (texting style, vocabulary patterns, traits)</li>
+                    <li>The last 10 simulation messages (Not Real Messages)</li>
+                    <li>Your current simulation message</li>
+                </ul>
+                <p>Your original chat export files are never sent. Google's handling of that data is covered by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's Privacy Policy</a>.</p>
+                <p><strong>Data retention.</strong> Our backend server acts as a secure relay and does <strong>not</strong> store your conversation data. No personal messages are permanently stored on any external server.</p>
+                <p><strong>Third-party services.</strong> Foretext uses the following third-party services:</p>
+                <ul>
+                    <li><strong>Google Gemini AI</strong> — for generating response predictions</li>
+                    <li><strong>Apple Sign In</strong> — for authentication</li>
+                    <li><strong>Apple StoreKit</strong> — for subscription management</li>
+                </ul>
+                <p>Each service is subject to its own privacy policy. We do not sell your personal data.</p>
+                <p><strong>Your rights.</strong> You can delete your account and all associated data at any time from the Settings page.</p>
+                <p style="font-size: 0.9rem; color: #6e6e73; margin-top: 1rem;">Last updated: March 26, 2026</p>
             </section>
         </div>
     </div>
