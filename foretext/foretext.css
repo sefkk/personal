@@ -1,0 +1,134 @@
+.foretext-page {
+    padding: 100px 0 120px;
+    min-height: 100vh;
+}
+.foretext-page .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+.foretext-page h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #e4e4ea;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+.foretext-page .lead {
+    color: #7e7e86;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    margin-bottom: 2rem;
+}
+.foretext-page .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #b0b0b8;
+    text-decoration: none;
+    font-size: 0.95rem;
+    margin-bottom: 2.5rem;
+    transition: color 0.25s ease;
+}
+.foretext-page .back:hover {
+    color: #e4e4ea;
+}
+.foretext-subnav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+.foretext-subnav a {
+    color: #b0b0b8;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.25s ease;
+}
+.foretext-subnav a:hover {
+    color: #e4e4ea;
+}
+.foretext-subnav a[aria-current="page"] {
+    color: #e4e4ea;
+    font-weight: 500;
+}
+.foretext-app-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 2rem 0 2.5rem;
+    align-items: flex-start;
+}
+.foretext-app-icon-wrap {
+    text-align: center;
+}
+.foretext-app-icon-wrap img {
+    width: 120px;
+    height: 120px;
+    border-radius: 26px;
+    display: block;
+    margin: 0 auto 0.65rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    object-fit: cover;
+}
+.foretext-app-icon-wrap .label {
+    font-size: 0.9rem;
+    color: #7e7e86;
+    font-weight: 500;
+}
+.foretext-page .section {
+    margin-bottom: 2.5rem;
+}
+.foretext-page .section h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #e4e4ea;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+}
+.foretext-page .section h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e4e4ea;
+    margin: 1.5rem 0 0.5rem;
+}
+.foretext-page .section p {
+    color: #7e7e86;
+    line-height: 1.7;
+    margin: 0 0 1rem;
+    font-size: 1rem;
+}
+.foretext-page .section p:last-child {
+    margin-bottom: 0;
+}
+.foretext-page .section ul {
+    color: #7e7e86;
+    line-height: 1.7;
+    margin: 0 0 1rem;
+    padding-left: 1.25rem;
+    font-size: 1rem;
+}
+.foretext-page .section li {
+    margin-bottom: 0.5rem;
+}
+.foretext-page .section a {
+    color: #b0b0b8;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.foretext-page .section a:hover {
+    color: #e4e4ea;
+}
+.foretext-meta {
+    font-size: 0.9rem;
+    color: #6e6e73;
+    margin-top: 1rem;
+}
+.foretext-legal-emphasis {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #8a8a92;
+    margin-bottom: 1rem;
+}
